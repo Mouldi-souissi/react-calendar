@@ -11,6 +11,7 @@ import {
 import ModalAddEvent from "./ModalAddEvent";
 import { useContext } from "react";
 import { CalendarContext } from "../context/CalendarContext";
+import ModalEventDetails from "./ModalEventDetails";
 
 const weekDays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 const months = [
@@ -34,8 +35,13 @@ const Calender = () => {
   const [endTime, setEndtTime] = useState("06:30");
   const [timeInterval, setTimeInterval] = useState(15);
   const [eventDate, setEventDate] = useState("");
-  const { events, toggleModalAdd, isAddModalOpen } =
-    useContext(CalendarContext);
+  const {
+    events,
+    toggleModalAdd,
+    isAddModalOpen,
+    isDetailsModalOpen,
+    toggleModalDetails,
+  } = useContext(CalendarContext);
 
   const generateWeekDays = () => {
     let daysOfWeek = [];
@@ -93,51 +99,24 @@ const Calender = () => {
     return timeLine;
   };
 
-  const generateCell = (d, t) => {
-    for (let i in events) {
-      const date = events[i].date;
-      const isSame_Day = isSameDay(d.date, date);
-      const isSameTime =
-        t.hours - date.getHours() === 0 && t.minutes - date.getMinutes() === 0;
-
-      if (isSame_Day && isSameTime) {
-        return { date: d, time: t, isEvent: true, event: events[i] };
-      } else {
-        return { date: d, time: t, isEvent: false };
+  useEffect(() => {
+    const outsideClick = (e) => {
+      const modal = document.querySelector(".modal_wrapper");
+      if (e.target === modal) {
+        toggleModalAdd(false);
       }
-    }
-  };
-  const generateGrid = () => {
-    const x = generateWeekDays();
-    const y = generateTimeLine();
-    let grid = [];
-
-    for (let i in x) {
-      for (let j in y) {
-        const cell = generateCell(x[i], y[j]);
-        grid.push(cell);
-      }
-    }
-
-    console.log(grid);
-    return grid;
-  };
-
-  // useEffect(() => {
-  //   const generatedGrid = generateGrid();
-  //   setGrid(generateGrid);
-  // }, []);
-
-  const closeModalAdd = () => {
-    toggleModalAdd(false);
-  };
+    };
+    window.addEventListener("click", outsideClick);
+    return () => window.removeEventListener("click", outsideClick);
+  }, []);
 
   const generateDate = (d, t) => {
     const eventDate = new Date(d.date);
     eventDate.setHours(t.hours);
     eventDate.setMinutes(t.minutes);
     setEventDate(eventDate);
-    toggleModalAdd(true);
+    // toggleModalAdd(true);
+    toggleModalDetails(true);
   };
 
   const handleCellClass = (d, t) => {
@@ -152,7 +131,7 @@ const Calender = () => {
       }
     }
   };
-  const handleEventDetails = (d, t) => {
+  const showTitle = (d, t) => {
     for (let i in events) {
       const date = events[i].date;
       const isSame_Day = isSameDay(d.date, date);
@@ -214,13 +193,11 @@ const Calender = () => {
                   {generateWeekDays().map((d) => (
                     <td
                       key={d.date}
-                      // data-bs-toggle="modal"
-                      // data-bs-target="#FormModal"
                       onClick={() => generateDate(d, t)}
                       className={handleCellClass(d, t)}
                       style={{ cursor: "pointer" }}
                     >
-                      {handleEventDetails(d, t)}
+                      {showTitle(d, t)}
                     </td>
                   ))}
                 </tr>
@@ -228,13 +205,8 @@ const Calender = () => {
             </tbody>
           </table>
         </div>
-        {isAddModalOpen && (
-          <ModalAddEvent
-            handleClose={closeModalAdd}
-            eventDate={eventDate}
-            useForceUpdate={useForceUpdate}
-          />
-        )}
+        {isAddModalOpen && <ModalAddEvent eventDate={eventDate} />}
+        {isDetailsModalOpen && <ModalEventDetails eventDate={eventDate} />}
       </div>
     </div>
   );

@@ -46,6 +46,7 @@ td {
   font-weight: 700;
   filter: drop-shadow(2px 2px 2px grey);
   border-bottom: 3px solid transparent !important;
+  border-right: 5px solid transparent !important;
 }
 
 .days-cell {

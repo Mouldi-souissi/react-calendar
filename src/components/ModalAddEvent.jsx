@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { CalendarContext } from "../context/CalendarContext";
 
 const ModalAddEvent = (props) => {
-  const { eventDate, useForceUpdate } = props;
+  const { eventDate } = props;
   const { addEvent, toggleModalAdd } = useContext(CalendarContext);
   const [data, setData] = useState("");
 
