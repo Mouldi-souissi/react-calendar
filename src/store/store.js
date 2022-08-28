@@ -22,6 +22,7 @@ export const useStore = create((set) => ({
 
   isAddModalOpen: false,
   isDetailsModalOpen: false,
+  isEditModalOpen: false,
 
   generateGrid: (date, startTime, endTime, timeInterval, events) => {
     const generatedGrid = generateGrid(
@@ -39,6 +40,9 @@ export const useStore = create((set) => ({
   },
   toggleModalDetails: () => {
     set((state) => ({ isDetailsModalOpen: !state.isDetailsModalOpen }));
+  },
+  toggleEditModal: () => {
+    set((state) => ({ isEditModalOpen: !state.isEditModalOpen }));
   },
   addEvent: (event) => {
     set((state) => ({ events: [...state.events, event] }));

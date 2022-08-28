@@ -1,31 +1,25 @@
 import React, { useState } from "react";
 import { useStore } from "../store/store";
 
-const ModalAddEvent = (props) => {
-  const { eventDate } = props;
+const ModalEditEvent = (props) => {
+  const { eventDate, event } = props;
   const [data, setData] = useState("");
-
-  const addEvent = useStore((state) => state.addEvent);
-  const toggleModalAdd = useStore((state) => state.toggleModalAdd);
+  const toggleEditModal = useStore((state) => state.toggleEditModal);
 
   const handleInput = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    addEvent({ ...data, date: new Date(eventDate) });
-    setData("");
-    toggleModalAdd(false);
+  const handleSubmit = () => {
+    console.log("submit");
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="modal_wrapper">
         <div className="modal_content">
           <div className="modal_header">
             <div>Add event</div>
-            <div className="exit" onClick={() => toggleModalAdd(false)}>
+            <div className="exit" onClick={toggleEditModal}>
               &times;
             </div>
           </div>
@@ -48,6 +42,7 @@ const ModalAddEvent = (props) => {
                   name="title"
                   onChange={handleInput}
                   required
+                  defaultValue={event.title}
                 />
               </div>
               <div className="form-group col-lg-12">
@@ -57,16 +52,14 @@ const ModalAddEvent = (props) => {
                   className="form-control"
                   name="description"
                   onChange={handleInput}
+                  defaultValue={event.description}
                   required
                 />
               </div>
             </div>
           </div>
           <div className="modal_footer">
-            <button
-              className="btn btn-secondary"
-              onClick={() => toggleModalAdd(false)}
-            >
+            <button className="btn btn-secondary" onClick={toggleEditModal}>
               Cancel
             </button>
             <button className="btn btn-primary" type="submit">
@@ -79,4 +72,4 @@ const ModalAddEvent = (props) => {
   );
 };
 
-export default ModalAddEvent;
+export default ModalEditEvent;

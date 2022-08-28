@@ -10,6 +10,7 @@ import ModalAddEvent from "./ModalAddEvent";
 import ModalEventDetails from "./ModalEventDetails";
 import { useStore } from "../store/store";
 import { generateWeekDays } from "../functions/calendarLogic";
+import ModalEditEvent from "./ModalEditEvent";
 
 const months = [
   "January",
@@ -29,6 +30,7 @@ const months = [
 const Calender = () => {
   // ************* state ****************
   const [eventDate, setEventDate] = useState("");
+  const [event, setEvent] = useState("");
   // ************* state ****************
 
   // ************* store ****************
@@ -43,6 +45,7 @@ const Calender = () => {
   const toggleModalDetails = useStore((state) => state.toggleModalDetails);
   const isAddModalOpen = useStore((state) => state.isAddModalOpen);
   const isDetailsModalOpen = useStore((state) => state.isDetailsModalOpen);
+  const isEditModalOpen = useStore((state) => state.isEditModalOpen);
   const setDate = useStore((state) => state.setDate);
   // ************* store ****************
 
@@ -58,14 +61,21 @@ const Calender = () => {
     return () => window.removeEventListener("click", outsideClick);
   }, []);
 
-  const generateDate = (d, t) => {
-    const eventDate = new Date(d.date);
-    console.log(eventDate);
-    eventDate.setHours(t.hours);
-    eventDate.setMinutes(t.minutes);
+  const handleModals = (cell) => {
+    const { date, time, isEvent } = cell;
+    const eventDate = new Date(date.date);
+
+    eventDate.setHours(time.hours);
+    eventDate.setMinutes(time.minutes);
+
     setEventDate(eventDate.toJSON());
-    toggleModalAdd(true);
-    // toggleModalDetails(true);
+    if (!isEvent) {
+      toggleModalAdd(true);
+    }
+    if (isEvent) {
+      setEvent(cell.event);
+      toggleModalDetails(true);
+    }
   };
 
   useEffect(() => {
@@ -122,8 +132,8 @@ const Calender = () => {
                     {row.map((cell) => (
                       <td
                         key={cell.date.date}
-                        className={cell.isEvent ? "event" : "cell"}
-                        onClick={() => generateDate(cell.date, cell.time)}
+                        className={cell.isEvent ? "event cell" : "cell"}
+                        onClick={() => handleModals(cell)}
                       >
                         {cell.isEvent && cell.event.title}
                       </td>
@@ -135,7 +145,12 @@ const Calender = () => {
           </table>
         </div>
         {isAddModalOpen && <ModalAddEvent eventDate={eventDate} />}
-        {isDetailsModalOpen && <ModalEventDetails eventDate={eventDate} />}
+        {isDetailsModalOpen && (
+          <ModalEventDetails eventDate={eventDate} event={event} />
+        )}
+        {isEditModalOpen && (
+          <ModalEditEvent eventDate={eventDate} event={event} />
+        )}
       </div>
     </div>
   );

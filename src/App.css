@@ -36,6 +36,10 @@ td {
   transition: all 0.6s ease-in-out;
 }
 
+.cell {
+  cursor: pointer;
+}
+
 .time-cell {
   background: rgb(39, 140, 255) !important;
   color: white;
