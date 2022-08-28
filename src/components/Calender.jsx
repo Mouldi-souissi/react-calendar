@@ -27,8 +27,11 @@ const months = [
 ];
 
 const Calender = () => {
+  // ************* state ****************
   const [eventDate, setEventDate] = useState("");
+  // ************* state ****************
 
+  // ************* store ****************
   const generateGrid = useStore((state) => state.generateGrid);
   const grid = useStore((state) => state.grid);
   const date = useStore((state) => state.date);
@@ -40,6 +43,8 @@ const Calender = () => {
   const toggleModalDetails = useStore((state) => state.toggleModalDetails);
   const isAddModalOpen = useStore((state) => state.isAddModalOpen);
   const isDetailsModalOpen = useStore((state) => state.isDetailsModalOpen);
+  const setDate = useStore((state) => state.setDate);
+  // ************* store ****************
 
   useEffect(() => {
     const outsideClick = (e) => {

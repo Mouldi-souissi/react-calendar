@@ -43,4 +43,8 @@ export const useStore = create((set) => ({
   addEvent: (event) => {
     set((state) => ({ events: [...state.events, event] }));
   },
+
+  setDate: (date) => {
+    set({ date: date });
+  },
 }));
