@@ -63,7 +63,7 @@ const Calender = () => {
     console.log(eventDate);
     eventDate.setHours(t.hours);
     eventDate.setMinutes(t.minutes);
-    setEventDate(eventDate);
+    setEventDate(eventDate.toJSON());
     toggleModalAdd(true);
     // toggleModalDetails(true);
   };

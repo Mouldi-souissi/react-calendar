@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useStore } from "../store/store";
+import { format } from "date-fns";
 
 const ModalAddEvent = (props) => {
   const { eventDate } = props;
@@ -20,7 +21,7 @@ const ModalAddEvent = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    addEvent({ ...data, date: eventDate });
+    addEvent({ ...data, date: new Date(eventDate) });
     setData("");
     toggleModalAdd(false);
   };
@@ -39,11 +40,12 @@ const ModalAddEvent = (props) => {
             <div className="row">
               <div className="form-group col-lg-12">
                 <label>Date & Time</label>
-                <input
+                {/* <input
                   type="text"
                   className="form-control-plaintext"
                   value={eventDate}
-                />
+                /> */}
+                <div className="form-control">{eventDate}</div>
               </div>
               <div className="form-group col-lg-12">
                 <label>Title</label>
