@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
   format,
-  addDays,
-  startOfWeek,
   getMonth,
   nextMonday,
   previousMonday,
   isSameDay,
 } from "date-fns";
 import ModalAddEvent from "./ModalAddEvent";
-import { useContext } from "react";
-import { CalendarContext } from "../context/CalendarContext";
 import ModalEventDetails from "./ModalEventDetails";
+import { useStore } from "../store/store";
+import { generateWeekDays } from "../functions/calendarLogic";
 
-const weekDays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 const months = [
   "January",
   "February",
@@ -30,80 +27,26 @@ const months = [
 ];
 
 const Calender = () => {
-  const [date, setDate] = useState(new Date());
-  const [startTime, setStartTime] = useState("06:00");
-  const [endTime, setEndtTime] = useState("06:30");
-  const [timeInterval, setTimeInterval] = useState(15);
   const [eventDate, setEventDate] = useState("");
-  const {
-    events,
-    toggleModalAdd,
-    isAddModalOpen,
-    isDetailsModalOpen,
-    toggleModalDetails,
-  } = useContext(CalendarContext);
 
-  const generateWeekDays = () => {
-    let daysOfWeek = [];
-    const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-
-    for (let i = 0; i < 7; i++) {
-      daysOfWeek.push({
-        date: addDays(weekStart, i),
-        day: format(addDays(weekStart, i), "d") + " " + weekDays[i],
-      });
-    }
-
-    return daysOfWeek;
-  };
-
-  const generateTimeLine = () => {
-    let timeLine = [];
-
-    const displayTime = (totalMin) => {
-      const hours = Math.floor(totalMin / 60);
-      const minuts = Math.floor(totalMin % 60);
-
-      return `${hours < 10 ? "0" + hours.toString() : hours}:${
-        minuts < 10 ? "0" + minuts.toString() : minuts
-      }`;
-    };
-
-    const startPoint = {
-      value: startTime,
-      hours: Number(startTime.substring(0, 2)),
-      minutes: Number(startTime.substring(3, 5)),
-      totalMin:
-        Number(startTime.substring(0, 2)) * 60 +
-        Number(startTime.substring(3, 5)),
-    };
-
-    timeLine.push(startPoint);
-
-    let totalMin = startPoint.totalMin;
-    let totalMinEnd =
-      Number(endTime.substring(0, 2)) * 60 + Number(endTime.substring(3, 5));
-    while (
-      timeLine[timeLine.length - 1].totalMin <=
-      totalMinEnd - timeInterval
-    ) {
-      totalMin = totalMin + timeInterval;
-
-      timeLine.push({
-        value: displayTime(totalMin),
-        totalMin: totalMin,
-        hours: Math.floor(totalMin / 60),
-        minutes: Math.floor(totalMin % 60),
-      });
-    }
-    return timeLine;
-  };
+  const generateGrid = useStore((state) => state.generateGrid);
+  const grid = useStore((state) => state.grid);
+  const date = useStore((state) => state.date);
+  const startTime = useStore((state) => state.startTime);
+  const endTime = useStore((state) => state.endTime);
+  const timeInterval = useStore((state) => state.timeInterval);
+  const events = useStore((state) => state.events);
+  const toggleModalAdd = useStore((state) => state.toggleModalAdd);
+  const toggleModalDetails = useStore((state) => state.toggleModalDetails);
+  const isAddModalOpen = useStore((state) => state.isAddModalOpen);
+  const isDetailsModalOpen = useStore((state) => state.isDetailsModalOpen);
 
   useEffect(() => {
     const outsideClick = (e) => {
       const modal = document.querySelector(".modal_wrapper");
       if (e.target === modal) {
         toggleModalAdd(false);
+        toggleModalDetails(false);
       }
     };
     window.addEventListener("click", outsideClick);
@@ -112,37 +55,17 @@ const Calender = () => {
 
   const generateDate = (d, t) => {
     const eventDate = new Date(d.date);
+    console.log(eventDate);
     eventDate.setHours(t.hours);
     eventDate.setMinutes(t.minutes);
     setEventDate(eventDate);
-    // toggleModalAdd(true);
-    toggleModalDetails(true);
+    toggleModalAdd(true);
+    // toggleModalDetails(true);
   };
 
-  const handleCellClass = (d, t) => {
-    for (let i in events) {
-      const date = events[i].date;
-      const isSame_Day = isSameDay(d.date, date);
-      const isSameTime =
-        t.hours - date.getHours() === 0 && t.minutes - date.getMinutes() === 0;
-
-      if (isSame_Day && isSameTime) {
-        return "event";
-      }
-    }
-  };
-  const showTitle = (d, t) => {
-    for (let i in events) {
-      const date = events[i].date;
-      const isSame_Day = isSameDay(d.date, date);
-      const isSameTime =
-        t.hours - date.getHours() === 0 && t.minutes - date.getMinutes() === 0;
-
-      if (isSame_Day && isSameTime) {
-        return events[i].title;
-      }
-    }
-  };
+  useEffect(() => {
+    generateGrid(date, startTime, endTime, timeInterval, events);
+  }, [events]);
 
   return (
     <div className="container card p-2 shadow mt-3">
@@ -174,7 +97,7 @@ const Calender = () => {
                 <th scope="col" className="days-cell">
                   Time \ Days
                 </th>
-                {generateWeekDays().map((d) => (
+                {generateWeekDays(date).map((d) => (
                   <th key={d.date} className="days-cell">
                     {isSameDay(d.date, new Date()) && (
                       <div className="circle"></div>
@@ -185,23 +108,24 @@ const Calender = () => {
               </tr>
             </thead>
             <tbody>
-              {generateTimeLine().map((t) => (
-                <tr key={t.totalMin}>
-                  <td scope="row" className="time-cell">
-                    {t.value}
-                  </td>
-                  {generateWeekDays().map((d) => (
-                    <td
-                      key={d.date}
-                      onClick={() => generateDate(d, t)}
-                      className={handleCellClass(d, t)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {showTitle(d, t)}
+              {grid.map((row, i) => {
+                return (
+                  <tr key={i}>
+                    <td scope="row" className="time-cell">
+                      {row[i].time.value}
                     </td>
-                  ))}
-                </tr>
-              ))}
+                    {row.map((cell) => (
+                      <td
+                        key={cell.date.date}
+                        className={cell.isEvent ? "event" : "cell"}
+                        onClick={() => generateDate(cell.date, cell.time)}
+                      >
+                        {cell.isEvent && cell.event.title}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

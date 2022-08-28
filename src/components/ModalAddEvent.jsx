@@ -1,22 +1,28 @@
 import React, { useState } from "react";
-import { useContext } from "react";
-import { CalendarContext } from "../context/CalendarContext";
+import { useStore } from "../store/store";
 
 const ModalAddEvent = (props) => {
   const { eventDate } = props;
-  const { addEvent, toggleModalAdd } = useContext(CalendarContext);
   const [data, setData] = useState("");
+  const date = useStore((state) => state.date);
+  const startTime = useStore((state) => state.startTime);
+  const endTime = useStore((state) => state.endTime);
+  const timeInterval = useStore((state) => state.timeInterval);
+  const events = useStore((state) => state.events);
+  const generateGrid = useStore((state) => state.generateGrid);
+
+  const addEvent = useStore((state) => state.addEvent);
+  const toggleModalAdd = useStore((state) => state.toggleModalAdd);
 
   const handleInput = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     addEvent({ ...data, date: eventDate });
     setData("");
     toggleModalAdd(false);
-    useForceUpdate();
   };
 
   return (

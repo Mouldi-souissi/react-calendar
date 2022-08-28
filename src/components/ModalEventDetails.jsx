@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
-import { CalendarContext } from "../context/CalendarContext";
+import React from "react";
 
 const ModalEventDetails = (props) => {
   const { eventDate } = props;
-  const { toggleModalDetails } = useContext(CalendarContext);
+  const toggleModalDetails = useStore((state) => state.toggleModalDetails);
   const handleSubmit = () => {
     console.log("submit");
   };
@@ -13,7 +12,7 @@ const ModalEventDetails = (props) => {
         <div className="modal_content">
           <div className="modal_header">
             <div>Event</div>
-            <div className="exit" onClick={() => toggleModalDetails(false)}>
+            <div className="exit" onClick={() => toggleModalDetails()}>
               &times;
             </div>
           </div>
@@ -25,7 +24,7 @@ const ModalEventDetails = (props) => {
           <div className="modal_footer">
             <button
               className="btn btn-secondary"
-              onClick={() => toggleModalDetails(false)}
+              onClick={() => toggleModalDetails()}
             >
               Cancel
             </button>
