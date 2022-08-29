@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { generateGuid } from "../functions/uuid";
 import { useStore } from "../store/store";
 
 const ModalAddEvent = (props) => {
@@ -14,7 +15,7 @@ const ModalAddEvent = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    addEvent({ ...data, date: new Date(eventDate) });
+    addEvent({ ...data, date: new Date(eventDate), id: generateGuid() });
     setData("");
     toggleModalAdd(false);
   };

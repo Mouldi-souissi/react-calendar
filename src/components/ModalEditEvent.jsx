@@ -3,22 +3,26 @@ import { useStore } from "../store/store";
 
 const ModalEditEvent = (props) => {
   const { eventDate, event } = props;
-  const [data, setData] = useState("");
+  const [data, setData] = useState({ ...event });
   const toggleEditModal = useStore((state) => state.toggleEditModal);
+  const editEvent = useStore((state) => state.editEvent);
 
   const handleInput = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log("submit");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    editEvent(event.id, data);
+    setData({});
+    toggleEditModal();
   };
   return (
     <form onSubmit={handleSubmit}>
       <div className="modal_wrapper">
         <div className="modal_content">
           <div className="modal_header">
-            <div>Add event</div>
+            <div>Edit event</div>
             <div className="exit" onClick={toggleEditModal}>
               &times;
             </div>
@@ -42,7 +46,7 @@ const ModalEditEvent = (props) => {
                   name="title"
                   onChange={handleInput}
                   required
-                  defaultValue={event.title}
+                  value={data.title}
                 />
               </div>
               <div className="form-group col-lg-12">
@@ -52,7 +56,7 @@ const ModalEditEvent = (props) => {
                   className="form-control"
                   name="description"
                   onChange={handleInput}
-                  defaultValue={event.description}
+                  value={data.description}
                   required
                 />
               </div>

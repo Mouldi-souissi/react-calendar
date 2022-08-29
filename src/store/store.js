@@ -9,11 +9,13 @@ export const useStore = create((set) => ({
   grid: [],
   events: [
     {
+      id: "qsdfqdsf32569sqdf1111111",
       date: new Date("2022-08-22T06:00:00"),
       title: "test",
       description: "test desc",
     },
     {
+      id: "qsdfqdsf32569sqdfgfdg255f",
       date: new Date("2022-08-23T06:15:00"),
       title: "test2",
       description: "test2 desc",
@@ -50,5 +52,11 @@ export const useStore = create((set) => ({
 
   setDate: (date) => {
     set({ date: date });
+  },
+
+  editEvent: (id, editedEvent) => {
+    set((state) => ({
+      events: [...state.events.filter((event) => event.id !== id), editedEvent],
+    }));
   },
 }));
