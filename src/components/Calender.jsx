@@ -80,7 +80,7 @@ const Calender = () => {
 
   useEffect(() => {
     generateGrid(date, startTime, endTime, timeInterval, events);
-  }, [events]);
+  }, [events, date]);
 
   return (
     <div className="container card p-2 shadow mt-3">
