@@ -1,4 +1,4 @@
-import { format, addDays, startOfWeek, isSameDay } from "date-fns";
+import { format, addDays, startOfWeek, isSameDay, isBefore } from "date-fns";
 
 export const generateWeekDays = (date) => {
   const weekDays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -54,7 +54,18 @@ const generateTimeLine = (startTime, endTime, timeInterval) => {
   return timeLine;
 };
 
+const isPast = (date) => {
+  if (new Date().setHours(0, 0, 0, 0) - date.setHours(0, 0, 0, 0) <= 0) {
+    return false;
+  }
+
+  return true;
+};
+
 const generateCell = (d, t, events) => {
+  const isDatePast = isPast(new Date(d.date));
+  const isTimePast = new Date().getHours() - t.hours < 0;
+  console.log("first", { left: new Date().getHours(), right: t.hours });
   for (let i in events) {
     const date = events[i].date;
     const isSame_Day = isSameDay(d.date, date);
@@ -65,7 +76,7 @@ const generateCell = (d, t, events) => {
       return { date: d, time: t, isEvent: true, event: events[i] };
     }
   }
-  return { date: d, time: t, isEvent: false };
+  return { date: d, time: t, isEvent: false, isPast: isDatePast && isTimePast };
 };
 export const generateGrid = (
   date,

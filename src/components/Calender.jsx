@@ -5,6 +5,7 @@ import {
   nextMonday,
   previousMonday,
   isSameDay,
+  getWeekOfMonth,
 } from "date-fns";
 import ModalAddEvent from "./ModalAddEvent";
 import ModalEventDetails from "./ModalEventDetails";
@@ -62,20 +63,31 @@ const Calender = () => {
   }, []);
 
   const handleModals = (cell) => {
-    const { date, time, isEvent } = cell;
+    const { date, time, isEvent, isPast } = cell;
     const eventDate = new Date(date.date);
 
     eventDate.setHours(time.hours);
     eventDate.setMinutes(time.minutes);
 
     setEventDate(eventDate.toJSON());
-    if (!isEvent) {
+    if (!isEvent && !isPast) {
       toggleModalAdd(true);
     }
     if (isEvent) {
       setEvent(cell.event);
       toggleModalDetails(true);
     }
+  };
+
+  const handleStyles = (cell) => {
+    cell.isEvent ? "event cell" : "cell";
+    if (cell.isEvent) {
+      return "event cell";
+    }
+    if (cell.hasOwnProperty("isPast") && cell.isPast) {
+      return "disabled cell";
+    }
+    return "cell";
   };
 
   useEffect(() => {
@@ -87,7 +99,6 @@ const Calender = () => {
       <div className="calendar-header col-12">
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
-            {/* <div style={{ fontSize: "18px" }}> {format(date, "dd")}</div> */}
             <div className="ms-4">
               <div style={{ fontSize: "25px" }}>{months[getMonth(date)]}</div>
               <div style={{ fontSize: "24px" }}> {format(date, "yyyy")}</div>
@@ -132,7 +143,7 @@ const Calender = () => {
                     {row.map((cell) => (
                       <td
                         key={cell.date.date}
-                        className={cell.isEvent ? "event cell" : "cell"}
+                        className={handleStyles(cell)}
                         onClick={() => handleModals(cell)}
                       >
                         {cell.isEvent && cell.event.title}

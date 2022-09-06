@@ -13,7 +13,10 @@ const ModalEventDetails = (props) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="modal_wrapper">
-        <div className="modal_content">
+        <div
+          className="modal_content text-white"
+          style={{ background: "black", border: "2px solid white" }}
+        >
           <div className="modal_header">
             <div>Event</div>
             <div className="exit" onClick={() => toggleModalDetails()}>
