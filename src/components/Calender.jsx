@@ -138,7 +138,7 @@ const Calender = () => {
                 return (
                   <tr key={i}>
                     <td scope="row" className="time-cell">
-                      {row[i].time.value}
+                      {row[0]?.time?.value}
                     </td>
                     {row.map((cell) => (
                       <td

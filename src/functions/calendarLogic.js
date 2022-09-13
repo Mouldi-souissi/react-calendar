@@ -65,7 +65,7 @@ const isPast = (date) => {
 const generateCell = (d, t, events) => {
   const isDatePast = isPast(new Date(d.date));
   const isTimePast = new Date().getHours() - t.hours < 0;
-  console.log("first", { left: new Date().getHours(), right: t.hours });
+
   for (let i in events) {
     const date = events[i].date;
     const isSame_Day = isSameDay(d.date, date);
@@ -92,6 +92,7 @@ export const generateGrid = (
 
   for (let i in y) {
     let row = [];
+
     for (let j in x) {
       const cell = generateCell(x[j], y[i], events);
       row.push(cell);
@@ -99,5 +100,6 @@ export const generateGrid = (
     grid.push(row);
   }
 
+  console.log(grid);
   return grid;
 };

@@ -16,7 +16,7 @@ export const useStore = create((set) => ({
     },
     {
       id: "qsdfqdsf32569sqdfgfdg255f",
-      date: new Date("2022-08-28T06:15:00"),
+      date: new Date("2022-09-06T06:15:00"),
       title: "test2",
       description: "test2 desc",
     },
