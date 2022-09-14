@@ -3,20 +3,20 @@ import { generateGrid } from "../functions/calendarLogic";
 
 export const useStore = create((set) => ({
   date: new Date(),
-  startTime: "06:00",
-  endTime: "06:30",
+  startTime: "00:00",
+  endTime: "06:00",
   timeInterval: 15,
   grid: [],
   events: [
     {
       id: "qsdfqdsf32569sqdf1111111",
-      date: new Date("2022-09-05T06:00:00"),
+      date: new Date(),
       title: "test",
       description: "test desc",
     },
     {
       id: "qsdfqdsf32569sqdfgfdg255f",
-      date: new Date("2022-09-06T06:15:00"),
+      date: new Date("2022-09-15T06:15:00"),
       title: "test2",
       description: "test2 desc",
     },
