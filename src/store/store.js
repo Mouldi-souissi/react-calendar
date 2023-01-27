@@ -1,24 +1,31 @@
 import create from "zustand";
 import { generateGrid } from "../functions/calendarLogic";
 
+let twoDaysAgo = new Date();
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+twoDaysAgo.setHours(10, 0);
+
+let today = new Date();
+today.setHours(8, 0);
+
 export const useStore = create((set) => ({
   date: new Date(),
-  startTime: "00:00",
-  endTime: "06:00",
-  timeInterval: 15,
+  startTime: "08:00",
+  endTime: "18:30",
+  timeInterval: 120,
   grid: [],
   events: [
     {
       id: "qsdfqdsf32569sqdf1111111",
-      date: new Date(),
-      title: "test",
-      description: "test desc",
+      date: twoDaysAgo,
+      title: "Box",
+      description: "Box",
     },
     {
       id: "qsdfqdsf32569sqdfgfdg255f",
-      date: new Date("2022-09-15T06:15:00"),
-      title: "test2",
-      description: "test2 desc",
+      date: today,
+      title: "Pizza",
+      description: "Pizza",
     },
   ],
 
